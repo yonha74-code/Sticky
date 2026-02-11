@@ -1,0 +1,20 @@
+
+{
+  "short_name": "PastelSticky",
+  "name": "Pastel Sticky Notes",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/568/568717.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#4f46e5",
+  "background_color": "#f8fafc",
+  "description": "감성적인 파스텔 톤의 데스크탑 포스트잇 앱",
+  "categories": ["productivity", "utilities"]
+}
