@@ -5,31 +5,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#4f46e5">
-  <meta name="description" content="Pastel Sticky - Windows용 고성능 감성 포스트잇">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>Pastel Sticky - Desktop Experience</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📌</text></svg>">
+  <title>Pastel Sticky - Zero Lag</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <link rel="manifest" href="./manifest.json">
   <style>
-    body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #f8fafc; margin: 0; height: 100vh; width: 100vw; }
+    body { 
+      font-family: 'Inter', sans-serif; 
+      overflow: hidden; 
+      background-color: #f1f5f9; 
+      margin: 0; 
+      height: 100vh; 
+      width: 100vw; 
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
     .font-handwriting { font-family: 'Nanum Pen Script', cursive; }
     #root { height: 100%; width: 100%; }
+    
+    /* 포스트잇 기본 스타일: 위치 이동 시에만 부드럽게 (드래그 시엔 꺼짐) */
+    .sticky-note-item {
+      will-change: transform;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
+      transition: box-shadow 0.3s ease;
+    }
+
+    /* 드래그 중일 때: 트랜지션을 완전히 꺼서 점프 현상 방지 */
+    .sticky-note-item.is-dragging {
+      transition: none !important;
+      box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.25) !important;
+      opacity: 0.9;
+      cursor: grabbing !important;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    .rich-content { word-break: break-all; }
+    .rich-content:focus { outline: none; }
+    .rich-content font[color] { color: inherit; }
+
     .loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; color: #4f46e5; }
     .spinner { width: 32px; height: 32px; border: 3px solid #e2e8f0; border-top: 3px solid #4f46e5; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
   </style>
-<script type="importmap">
+  <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@19.0.0",
     "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
@@ -43,31 +72,5 @@
     </div>
   </div>
   <script type="text/babel" data-presets="react,typescript" src="./index.tsx"></script>
-  <script>
-    // Service Worker registration with origin check and error handling
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        try {
-          // Check if we are running in a restricted sandbox or preview that might block SW
-          const isSandboxed = window.location.origin === 'null' || !window.location.protocol.startsWith('http');
-          
-          if (!isSandboxed) {
-            navigator.serviceWorker.register('./sw.js', { scope: './' })
-              .then(reg => {
-                console.log('ServiceWorker registration successful with scope: ', reg.scope);
-              })
-              .catch(err => {
-                // Silently handle origin mismatch or other security errors in development/preview environments
-                console.warn('ServiceWorker registration skipped (Expected in preview/sandbox):', err.message);
-              });
-          } else {
-            console.log('ServiceWorker skipped: Restricted environment detected.');
-          }
-        } catch (e) {
-          console.error('Unexpected error during ServiceWorker registration:', e);
-        }
-      });
-    }
-  </script>
 </body>
 </html>
